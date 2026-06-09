@@ -1,0 +1,8 @@
+# Ca sĩ Chi Dân bị tạm giữ vì liên quan đến ma túy
+
+**Source:** https://vnexpress.net/ca-si-chi-dan-bi-tam-giu-vi-lien-quan-ma-tuy-4814234.html
+**Crawled:** 2026-06-08T14:27:17.518080
+
+---
+
+Ca sĩ Chi Dân (tên thật là Nguyễn Trung Hiếu, sinh năm 1989) vừa bị cơ quan công an quận Tân Bình, TP.HCM tạm giữ để điều tra do có liên quan đến hành vi tổ chức sử dụng trái phép chất ma túy tại một căn hộ. Chi Dân là ca sĩ nổi tiếng được giới trẻ yêu mến qua nhiều ca khúc như 'Mất trí nhớ', 'Điều anh biết', '1234'. Vụ việc đã gây xôn xao dư luận xã hội khi một người nổi tiếng có sức ảnh hưởng đến giới trẻ lại vi phạm pháp luật về phòng chống ma túy.

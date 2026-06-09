@@ -1,0 +1,17 @@
+# Environments & Secrets
+.env
+.env.*
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+src/__pycache__/
+tests/__pycache__/
+
+# Local Database & AI Agents Cache
+chroma_db/
+.deepeval/
+.agents/

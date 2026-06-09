@@ -1,0 +1,82 @@
+[
+  {
+    "question": "Hình phạt cho tội tàng trữ trái phép chất ma tuý theo Điều 249 Bộ luật Hình sự?",
+    "expected_answer": "Phạt tù từ 1 đến 5 năm đối với trường hợp tàng trữ từ 1g đến dưới 5g heroin hoặc cocaine, hoặc chất ma tuý khác với khối lượng tương đương.",
+    "expected_context": "bo-luat-hinh-su-2015-ma-tuy.docx, Điều 249"
+  },
+  {
+    "question": "Luật Phòng chống ma tuý 2021 quy định những hình thức cai nghiện nào?",
+    "expected_answer": "Cai nghiện tự nguyện (thực hiện tại gia đình, cộng đồng hoặc cơ sở cai nghiện) và cai nghiện bắt buộc (thực hiện tại cơ sở công lập).",
+    "expected_context": "luat-phong-chong-ma-tuy-2021.docx, Điều 28"
+  },
+  {
+    "question": "Danh mục các chất ma tuý thuộc nhóm I theo quy định pháp luật Việt Nam gồm những chất nào?",
+    "expected_answer": "Nhóm I gồm các chất ma tuý tuyệt đối cấm sử dụng trong y học và đời sống, bao gồm heroin, cocaine, methamphetamine, MDMA (ecstasy), cannabis (cần sa), và các chất tương tự.",
+    "expected_context": "luat-phong-chong-ma-tuy-2021.docx, Điều 249"
+  },
+  {
+    "question": "Biện pháp quản lý người sử dụng trái phép chất ma túy kéo dài bao lâu?",
+    "expected_answer": "Thời hạn quản lý người sử dụng trái phép chất ma túy là 01 năm kể từ ngày Chủ tịch Ủy ban nhân dân cấp xã ra quyết định quản lý.",
+    "expected_context": "luat-phong-chong-ma-tuy-2021.docx, Điều 23"
+  },
+  {
+    "question": "Người nghiện ma túy từ đủ 18 tuổi trở lên bị đưa vào cơ sở cai nghiện bắt buộc trong trường hợp nào?",
+    "expected_answer": "Khi thuộc một trong các trường hợp: Không đăng ký, không thực hiện hoặc tự ý chấm dứt cai nghiện ma túy tự nguyện; Trong thời gian cai nghiện ma túy tự nguyện bị phát hiện sử dụng trái phép chất ma túy; Người nghiện ma túy chất kích thích, ma túy tổng hợp tái nghiện.",
+    "expected_context": "luat-phong-chong-ma-tuy-2021.docx, Điều 32"
+  },
+  {
+    "question": "Cơ quan nào có trách nhiệm phối hợp đấu tranh phòng chống tội phạm ma túy theo Nghị định 105/2021/NĐ-CP?",
+    "expected_answer": "Các cơ quan chuyên trách thuộc Công an nhân dân, Hải quan, Bộ đội Biên phòng và Cảnh sát biển.",
+    "expected_context": "nghi-dinh-105-2021.docx, Chương I"
+  },
+  {
+    "question": "Hình phạt cho tội sản xuất trái phép chất ma túy theo Điều 248 Bộ luật Hình sự là gì?",
+    "expected_answer": "Sản xuất trái phép chất ma túy dưới bất kỳ hình thức nào bị phạt tù từ 02 năm đến 07 năm. Trường hợp nghiêm trọng hoặc đặc biệt nghiêm trọng có thể bị phạt tù từ 20 năm, tù chung thân hoặc tử hình.",
+    "expected_context": "bo-luat-hinh-su-2015-ma-tuy.docx, Điều 248"
+  },
+  {
+    "question": "Hình phạt cho tội vận chuyển trái phép chất ma túy quy định tại Điều 250 Bộ luật Hình sự là gì?",
+    "expected_answer": "Vận chuyển trái phép chất ma túy mà không nhằm mục đích sản xuất, mua bán, tàng trữ thì bị phạt tù từ 02 năm đến 07 năm. Nếu có tổ chức hoặc khối lượng lớn có thể bị phạt tù từ 07 năm đến 15 năm, chung thân hoặc tử hình.",
+    "expected_context": "bo-luat-hinh-su-2015-ma-tuy.docx, Điều 250"
+  },
+  {
+    "question": "Ca sĩ Chi Dân bị cơ quan công an nào tạm giữ và vì lý do gì?",
+    "expected_answer": "Ca sĩ Chi Dân (tên thật là Nguyễn Trung Hiếu) bị công an quận Tân Bình, TP.HCM tạm giữ để điều tra do liên quan đến hành vi tổ chức sử dụng trái phép chất ma túy.",
+    "expected_context": "article_01.md"
+  },
+  {
+    "question": "Hành vi vi phạm của người mẫu An Tây (Andrea Aybar) là gì và xảy ra ở đâu?",
+    "expected_answer": "Người mẫu An Tây bị công an kiểm tra, phát hiện dương tính với ma túy tại một căn hộ chung cư ở TP.HCM và bị điều tra về hành vi tàng trữ và tổ chức sử dụng trái phép chất ma túy.",
+    "expected_context": "article_02.md"
+  },
+  {
+    "question": "Diễn viên hài Hữu Tín bị bắt quả tang sử dụng loại ma túy nào và ở đâu?",
+    "expected_answer": "Diễn viên hài Hữu Tín bị công an quận 8, TP.HCM bắt quả tang sử dụng thuốc lắc và ketamine tại một căn hộ chung cư, sau đó bị khởi tố về tội tàng trữ và tổ chức sử dụng ma túy.",
+    "expected_context": "article_03.md"
+  },
+  {
+    "question": "Diễn viên Lệ Hằng đóng vai gì trong phim truyền hình nào và bị bắt giữ vì tội gì?",
+    "expected_answer": "Bùi Thị Lệ Hằng thủ vai Hoài 'Thatcher' trong phim truyền hình 'Xin hãy tin' bị khởi tố về tội mua bán trái phép chất ma túy khi đang mang theo 0,696 gam ma túy tổng hợp.",
+    "expected_context": "article_04.md"
+  },
+  {
+    "question": "Bản án hình sự của ca sĩ Châu Việt Cường là bao nhiêu năm tù và về tội danh gì?",
+    "expected_answer": "Nguyễn Việt Cường (ca sĩ Châu Việt Cường) bị tuyên án phạt mức án 13 năm tù về tội giết người (hoặc vô ý làm chết người) do ảo giác ma túy gây ra.",
+    "expected_context": "article_05.md"
+  },
+  {
+    "question": "Ảo giác ma túy (ngáo đá) của Châu Việt Cường đã dẫn đến hành động nghiêm trọng nào?",
+    "expected_answer": "Châu Việt Cường bị ảo giác nặng nghĩ cô gái trong nhóm bị ma nhập nên đã lấy tỏi nhét liên tục vào miệng cô gái khiến nạn nhân tử vong vì ngạt thở.",
+    "expected_context": "article_05.md"
+  },
+  {
+    "question": "Mục đích của việc quản lý người sử dụng trái phép chất ma túy theo Luật 2021 là gì?",
+    "expected_answer": "Là biện pháp phòng ngừa xã hội nhằm giúp người sử dụng không tiếp tục sử dụng trái phép chất ma túy và phòng ngừa các hành vi vi phạm pháp luật của họ.",
+    "expected_context": "luat-phong-chong-ma-tuy-2021.docx, Điều 23"
+  },
+  {
+    "question": "Mô tả về biện pháp cai nghiện tự nguyện theo Luật Phòng chống ma túy 2021?",
+    "expected_answer": "Cai nghiện tự nguyện được thực hiện tại gia đình, cộng đồng hoặc tại cơ sở cai nghiện ma túy.",
+    "expected_context": "luat-phong-chong-ma-tuy-2021.docx, Điều 28"
+  }
+]

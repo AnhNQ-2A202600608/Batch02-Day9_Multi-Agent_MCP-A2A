@@ -1,0 +1,16 @@
+# Những lợi ích của hộp số CVT trên xe cỡ nhỏ
+
+**Source:** https://vnexpress.net/ca-si-chau-viet-cuong-lanh-an-13-nam-tu-vi-sat-hai-co-gai-sau-khi-phe-ma-tuy-3904567.html
+**Crawled:** 2026-06-08T14:27:21.216627
+
+---
+
+Ngày nay, hộp số tự động vô cấp (CVT) dần thay thế hộp số tự động có cấp (AT) trên xe dung tích nhỏ bởi những lợi thế nhất định. Tương tự, Suzuki Celerio sử dụng động cơ ba xi-lanh, dung tích 1.0 lít kết hợp hộp số CVT. Mức tiêu hao nhiên liệu của Suzuki Celerio chỉ từ 3,77L/100km, theo Suzuki Việt Nam.
+
+Ưu điểm đầu tiên của hộp số vô cấp CVT trên Celerio là tối ưu động năng được sinh ra từ động cơ. Với loại hộp số này, xe luôn hoạt động đúng tỷ số truyền cần dùng. Khác với hộp số tự động AT hoặc số sàn, CVT trên Celerio được lập trình để giữ tốc độ động cơ đồng nhất với động năng được sinh ra.
+
+Hộp số CVT cũng giúp xe có mức tiêu hao nhiên liệu ít hơn với loại hộp số khác, theo AutoGuide. Về mặt lý thuyết, CVT đặt động cơ ở trạng thái phù hợp với động năng, từ đó giảm mức tiêu hao nhiên liệu. Điều này đặc biệt ý nghĩa khi xe di chuyển ở dải tốc độ ổn định hoặc người lái giữ mức chân ga hợp lý.
+
+Về cấu tạo, hộp số CVT thường đơn giản và có ít chi tiết hơn so với hộp số truyền thống. Thay vì dùng hệ thống bánh răng phức tạp, hộp số CVT sử dụng chuỗi pu-ly hình nón kết nối cùng với dây đai (kim loại). Tuỳ vào tốc độ thực tế, pu-ly sẽ thay đổi vị trí và mang đến tỉ số truyền khác nhau. Cơ chế này giúp hộp số CVT mang lại hiệu quả sử dụng tối ưu. Kết cấu đơn giản cũng khiến hộp số CVT thường nhẹ hơn và nhỏ gọn hơn so với hộp số AT.
+
+Quá trình chuyển số của hộp số CVT mượt mà hơn so với loại dùng bánh răng. Hộp số CVT biến thiên tuần hoàn, không gây ra hiện tượng giật cục như ở hộp số truyền thống. Từ đó, cảm giác vận hành sẽ êm ái hơn và mức tiêu hao nhiên liệu tối ưu hơn.
