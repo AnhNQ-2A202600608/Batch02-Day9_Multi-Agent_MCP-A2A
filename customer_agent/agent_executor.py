@@ -40,36 +40,29 @@ class CustomerAgentExecutor(AgentExecutor):
         await updater.start_work()
 
         try:
-            # Build a per-request graph so the tool closure captures this request's IDs
-            graph = build_graph(
-                trace_id=trace_id,
-                context_id=context_id,
-                depth=depth,
-            )
+            optimize = metadata.get("optimize", True)
+            if isinstance(optimize, str):
+                optimize = optimize.lower() != "false"
 
-            result = await graph.ainvoke(
-                {"messages": [HumanMessage(content=question)]},
-                config={"configurable": {"thread_id": context_id}},
-            )
+            if optimize:
+                logger.info("Running Customer Agent in OPTIMIZED mode (direct delegation)")
+                from common.a2a_client import delegate
+                from common.registry_client import discover
 
-            # Extract the last AI message from the result
-            answer = ""
-            for msg in reversed(result.get("messages", [])):
-                if hasattr(msg, "content") and msg.content:
-                    if not isinstance(msg, HumanMessage):
-                        # Skip ToolMessages, only want final AIMessage
-                        from langchain_core.messages import AIMessage
-                        if isinstance(msg, AIMessage):
-                            answer = msg.content
-                            break
-
-            if not answer:
-                # Fallback: any non-human message content
-                for msg in reversed(result.get("messages", [])):
-                    content = getattr(msg, "content", "")
-                    if content and not isinstance(msg, HumanMessage):
-                        answer = content
-                        break
+                endpoint = await discover("legal_question")
+                answer = await delegate(
+                    endpoint=endpoint,
+                    question=question,
+                    context_id=context_id,
+                    trace_id=trace_id,
+                    depth=depth + 1,
+                )
+            else:
+                logger.info("Running Customer Agent in ORIGINAL mode (using LangGraph)")
+                graph = build_graph(trace_id=trace_id, context_id=context_id, depth=depth)
+                inputs = {"messages": [HumanMessage(content=question)]}
+                result = await graph.ainvoke(inputs)
+                answer = result["messages"][-1].content
 
             if not answer:
                 answer = "I was unable to process your legal question at this time."

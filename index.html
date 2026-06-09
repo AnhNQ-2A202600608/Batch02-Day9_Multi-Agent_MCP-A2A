@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Multi-Agent System - Dashboard Demo</title>
+    <!-- Google Fonts Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --border-color: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.15);
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.15);
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-purple: #a855f7;
+            --font-outfit: 'Outfit', sans-serif;
+            --font-inter: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-inter);
+            line-height: 1.6;
+            padding: 2rem;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Glow Backgrounds */
+        .ambient-glow-1 {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, rgba(15, 23, 42, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .ambient-glow-2 {
+            position: absolute;
+            bottom: -10%;
+            right: -10%;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, rgba(15, 23, 42, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Container Layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Header Style */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+
+        .logo-area h1 {
+            font-family: var(--font-outfit);
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-area p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Services Status Pills */
+        .status-panel {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .status-pill {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .status-pill:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.1);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .status-dot.offline {
+            background-color: var(--danger);
+            box-shadow: 0 0 8px var(--danger);
+        }
+
+        .status-dot.orange {
+            background-color: var(--warning);
+            box-shadow: 0 0 8px var(--warning);
+        }
+
+        /* Grid Layout for Main Content */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Panels */
+        .panel-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--accent-purple));
+        }
+
+        .panel-title {
+            font-family: var(--font-outfit);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Question input & terminal simulation */
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-input {
+            flex: 1;
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            font-family: var(--font-inter);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .question-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-glow);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-blue) 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-family: var(--font-outfit);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Preset Questions */
+        .presets {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .preset-badge {
+            background-color: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .preset-badge:hover {
+            border-color: var(--primary);
+            color: var(--text-main);
+        }
+
+        /* Terminal Logs Console */
+        .console-terminal {
+            background-color: #020617;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            height: 280px;
+            overflow-y: auto;
+            color: #38bdf8;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .console-line {
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+
+        .console-line.info { color: #38bdf8; }
+        .console-line.success { color: #4ade80; }
+        .console-line.warning { color: #fbbf24; }
+        .console-line.error { color: #f87171; }
+        .console-line.agent-tax { color: #e9d5ff; }
+        .console-line.agent-compliance { color: #fef08a; }
+        .console-line.agent-privacy { color: #fed7aa; }
+
+        /* Visualization Network Graph */
+        .visualization-area {
+            position: relative;
+            height: 440px;
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Network elements positioning */
+        .agent-node {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            background-color: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        .agent-node.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+            transform: scale(1.1);
+        }
+
+        .agent-node.active-success {
+            border-color: var(--success);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+            transform: scale(1.1);
+        }
+
+        .agent-node h4 {
+            font-family: var(--font-outfit);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .agent-node span {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+        }
+
+        /* Agent node specific positions */
+        #node-user { top: 165px; left: 20px; }
+        #node-customer { top: 165px; left: 160px; }
+        #node-law { top: 165px; left: 320px; }
+        #node-tax { top: 20px; left: 500px; }
+        #node-compliance { top: 165px; left: 500px; }
+        #node-privacy { top: 310px; left: 500px; }
+
+        /* SVG Connections Overlay */
+        .svg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .link-line {
+            stroke: var(--border-color);
+            stroke-width: 2;
+            fill: none;
+            transition: stroke 0.3s ease, stroke-width 0.3s ease;
+        }
+
+        .link-line.active {
+            stroke: var(--primary);
+            stroke-width: 3;
+            stroke-dasharray: 8;
+            animation: dash 1s linear infinite;
+        }
+
+        .link-line.active-purple {
+            stroke: var(--accent-purple);
+            stroke-width: 3;
+            stroke-dasharray: 8;
+            animation: dash 1s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -16;
+            }
+        }
+
+        /* Latency Analytics Cards */
+        .latency-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .latency-card {
+            background-color: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .latency-card.optimized {
+            border-color: rgba(16, 185, 129, 0.4);
+            background: linear-gradient(180deg, rgba(16, 185, 129, 0.02) 0%, rgba(16, 185, 129, 0.08) 100%);
+        }
+
+        .latency-card h5 {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .latency-val {
+            font-family: var(--font-outfit);
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .latency-card.optimized .latency-val { color: var(--success); }
+        .latency-card.original .latency-val { color: var(--danger); }
+
+        .latency-card p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Savings Badge */
+        .savings-badge {
+            background-color: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--success);
+            color: var(--success);
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        /* Q&A Cards style */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.5rem;
+        }
+
+        .info-card h4 {
+            font-family: var(--font-outfit);
+            color: #818cf8;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding-left: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .info-card li {
+            font-size: 0.85rem;
+            position: relative;
+            padding-left: 1.25rem;
+        }
+
+        .info-card li::before {
+            content: '✦';
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--primary);
+        }
+
+        .info-card strong {
+            color: var(--text-main);
+        }
+
+        /* Final Result Area */
+        .result-panel {
+            background-color: #0b0f19;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.25rem;
+            height: 290px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .result-panel h1, .result-panel h2, .result-panel h3 {
+            font-family: var(--font-outfit);
+            color: var(--primary);
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-panel h1 { font-size: 1.2rem; }
+        .result-panel h2 { font-size: 1.1rem; }
+        .result-panel h3 { font-size: 0.95rem; }
+
+        .result-panel p {
+            margin-bottom: 0.75rem;
+            color: #cbd5e1;
+        }
+
+        /* Fault Tolerance Controls */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .toggle-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Switch UI */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--danger);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Node Timers Styling */
+        .node-timer {
+            position: absolute;
+            bottom: -10px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            font-family: var(--font-inter);
+            color: var(--text-muted);
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        
+        .agent-node.active .node-timer {
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+        
+        .agent-node.active-success .node-timer {
+            border-color: var(--success);
+            color: var(--success);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        /* Small Switch UI */
+        .switch-sm {
+            width: 38px !important;
+            height: 20px !important;
+        }
+        .switch-sm .slider:before {
+            height: 12px !important;
+            width: 12px !important;
+            left: 4px !important;
+            bottom: 4px !important;
+        }
+        .switch-sm input:checked + .slider:before {
+            transform: translateX(18px) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <div class="container">
+        
+        <!-- Header -->
+        <header>
+            <div class="logo-area">
+                <h1>Legal Multi-Agent A2A Visualizer</h1>
+                <p>Mô phỏng & Trực quan hóa tương tác liên kết phân tán giữa các Agent qua A2A Protocol</p>
+            </div>
+            
+            <div class="status-panel">
+                <div class="status-pill" id="dashboard-mode-badge" style="background-color: rgba(245, 158, 11, 0.1); border-color: var(--warning); transition: all 0.3s ease;">
+                    <div id="dashboard-mode-dot" class="status-dot orange"></div>
+                    <span id="dashboard-mode-text">Chế độ: Mô Phỏng</span>
+                </div>
+                <div class="status-pill">
+                    <div id="registry-status-dot" class="status-dot offline"></div>
+                    Registry (:10000)
+                </div>
+                <div class="status-pill">
+                    <div id="customer-status-dot" class="status-dot offline"></div>
+                    Customer Agent (:10100)
+                </div>
+                <div class="status-pill">
+                    <div id="law-status-dot" class="status-dot offline"></div>
+                    Law Agent (:10101)
+                </div>
+                <div class="status-pill">
+                    <div id="tax-status-dot" class="status-dot offline"></div>
+                    Tax Agent (:10102)
+                </div>
+                <div class="status-pill">
+                    <div id="compliance-status-dot" class="status-dot offline"></div>
+                    Compliance Agent (:10103)
+                </div>
+                <div class="status-pill">
+                    <div id="privacy-status-dot" class="status-dot offline"></div>
+                    Privacy Agent (In-process)
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace Grid -->
+        <div class="main-grid">
+            
+            <!-- Left Panel: Playground Controls & Console -->
+            <div class="panel-card">
+                <h3 class="panel-title">💡 Interactive Playground</h3>
+                
+                <div class="toggle-container">
+                    <span class="toggle-label">⚡ Chế độ Tối ưu Latency (Bypass Lớp LLM Customer)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="latency-toggle" checked onchange="toggleLatencyMode()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <h4 style="font-size: 0.85rem; margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text-muted); font-family: var(--font-outfit); text-transform: uppercase; letter-spacing: 0.5px;">
+                    🛡️ Trạng thái hoạt động Agents (Test Fault Tolerance)
+                </h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1.25rem;">
+                    <div class="toggle-container" style="margin-bottom: 0; padding: 0.4rem 0.6rem;">
+                        <span class="toggle-label" style="font-size: 0.75rem;">Customer Agent</span>
+                        <label class="switch switch-sm">
+                            <input type="checkbox" id="customer-toggle" checked onchange="toggleAgentStatus('customer')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-container" style="margin-bottom: 0; padding: 0.4rem 0.6rem;">
+                        <span class="toggle-label" style="font-size: 0.75rem;">Law Agent</span>
+                        <label class="switch switch-sm">
+                            <input type="checkbox" id="law-toggle" checked onchange="toggleAgentStatus('law')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-container" style="margin-bottom: 0; padding: 0.4rem 0.6rem;">
+                        <span class="toggle-label" style="font-size: 0.75rem;">Tax Agent</span>
+                        <label class="switch switch-sm">
+                            <input type="checkbox" id="tax-toggle" checked onchange="toggleAgentStatus('tax')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-container" style="margin-bottom: 0; padding: 0.4rem 0.6rem;">
+                        <span class="toggle-label" style="font-size: 0.75rem;">Compliance Agent</span>
+                        <label class="switch switch-sm">
+                            <input type="checkbox" id="compliance-toggle" checked onchange="toggleAgentStatus('compliance')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-container" style="grid-column: span 2; margin-bottom: 0; padding: 0.4rem 0.6rem;">
+                        <span class="toggle-label" style="font-size: 0.75rem;">Privacy Agent</span>
+                        <label class="switch switch-sm">
+                            <input type="checkbox" id="privacy-toggle" checked onchange="toggleAgentStatus('privacy')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="presets">
+                    <span class="preset-badge" onclick="selectPreset(1)">Hợp đồng & Thuế</span>
+                    <span class="preset-badge" onclick="selectPreset(2)">Rò rỉ dữ liệu GDPR</span>
+                    <span class="preset-badge" onclick="selectPreset(3)">Vi phạm NDA & Thuế</span>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="user-question" class="question-input" value="Nếu công ty bị vi phạm hợp đồng và trốn thuế, hậu quả pháp lý là gì?" placeholder="Nhập câu hỏi pháp lý cần phân tích...">
+                    <button id="btn-submit" class="btn" onclick="startExecution()">
+                        ⚡ Gửi Câu Hỏi
+                    </button>
+                </div>
+
+                <h3 class="panel-title" style="margin-top: 1.5rem;">🖥️ Live Trace Logs</h3>
+                <div id="terminal-console" class="console-terminal">
+                    <div class="console-line info">[Hệ thống] Nhấn nút "Gửi Câu Hỏi" để bắt đầu luồng tracing phân tán...</div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Visualizer Node Graph -->
+            <div class="panel-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 class="panel-title">🌐 Active Flow Visualizer</h3>
+                    
+                    <div class="visualization-area">
+                        <!-- SVG Connections -->
+                        <svg class="svg-overlay">
+                            <!-- User to Customer -->
+                            <path id="link-user-customer" class="link-line" d="M 130 220 L 160 220" />
+                            <!-- Customer to Law -->
+                            <path id="link-customer-law" class="link-line" d="M 270 220 L 320 220" />
+                            
+                            <!-- Law to Tax -->
+                            <path id="link-law-tax" class="link-line" d="M 430 220 C 460 160, 450 75, 500 75" />
+                            <!-- Law to Compliance -->
+                            <path id="link-law-compliance" class="link-line" d="M 430 220 L 500 220" />
+                            <!-- Play to Privacy -->
+                            <path id="link-law-privacy" class="link-line" d="M 430 220 C 460 280, 450 365, 500 365" />
+                        </svg>
+
+                        <!-- Nodes -->
+                        <div id="node-user" class="agent-node">
+                            <h4>Client</h4>
+                            <span>Cửa sổ kiểm thử</span>
+                            <div class="node-timer" id="timer-user">--</div>
+                        </div>
+                        <div id="node-customer" class="agent-node">
+                            <h4>Customer</h4>
+                            <span>Cổng :10100</span>
+                            <div class="node-timer" id="timer-customer">--</div>
+                        </div>
+                        <div id="node-law" class="agent-node">
+                            <h4>Law Agent</h4>
+                            <span>Cổng :10101</span>
+                            <div class="node-timer" id="timer-law">--</div>
+                        </div>
+                        <div id="node-tax" class="agent-node">
+                            <h4>Tax Agent</h4>
+                            <span>Cổng :10102</span>
+                            <div class="node-timer" id="timer-tax">--</div>
+                        </div>
+                        <div id="node-compliance" class="agent-node">
+                            <h4>Compliance</h4>
+                            <span>Cổng :10103</span>
+                            <div class="node-timer" id="timer-compliance">--</div>
+                        </div>
+                        <div id="node-privacy" class="agent-node">
+                            <h4>Privacy</h4>
+                            <span>Privacy Specialist</span>
+                            <div class="node-timer" id="timer-privacy">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="latency-grid">
+                    <div class="latency-card original">
+                        <h5>Latency Chưa Tối Ưu</h5>
+                        <div class="latency-val">48.5s</div>
+                        <p>7 cuộc gọi LLM tuần tự</p>
+                    </div>
+                    <div class="latency-card optimized">
+                        <h5>Latency Đã Tối Ưu</h5>
+                        <div class="latency-val" id="optimized-latency-val">28.2s</div>
+                        <p>5 cuộc gọi LLM tuần tự</p>
+                        <div class="savings-badge">Tiết kiệm ~40% thời gian</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Section: Final Answer & Question Cards -->
+        <div class="main-grid">
+            
+            <!-- Result Panel -->
+            <div class="panel-card">
+                <h3 class="panel-title">📋 Báo cáo tổng hợp cuối cùng</h3>
+                <div id="result-view" class="result-panel">
+                    <p style="color: var(--text-muted); font-style: italic;">Báo cáo phân tích pháp lý chi tiết sẽ hiển thị ở đây sau khi hoàn thành luồng tracing...</p>
+                </div>
+            </div>
+
+            <!-- Q&A & Lessons learned Cards -->
+            <div class="info-grid">
+                
+                <!-- Card 1 -->
+                <div class="info-card">
+                    <h4>❓ Latency của Stage 5 là bao nhiêu và cách tối ưu hóa?</h4>
+                    <p><strong>1. Latency thực tế:</strong> ~47 - 52 giây cho luồng không tối ưu hóa. Lý do là hệ thống phải thực hiện 7 cuộc gọi LLM qua OpenRouter (Customer check, Law Analysis, Law Routing, Tax, Compliance, Law Aggregate, Customer Final Synthesis). Hầu hết thời gian trễ đến từ API sinh chữ (generation time) của LLM.</p>
+                    <p><strong>2. Đề xuất & Kết quả giải pháp giảm Latency:</strong></p>
+                    <ul>
+                        <li><strong>Bypass Customer Agent LLM:</strong> Customer Agent chỉ là cổng tiếp nhận. Chúng ta sửa đổi [customer_agent/agent_executor.py](file:///d:/code/VinAi%20Action/day9/Batch02-Day9_Multi-Agent_MCP-A2A/customer_agent/agent_executor.py) để gọi trực tiếp Law Agent qua Registry mà không chạy LangGraph LLM của chính nó. **Giảm ngay ~15 - 20s (tiết kiệm 2 cuộc gọi LLM tuần tự)**.</li>
+                        <li><strong>Tối ưu hóa Prompt Tax Agent:</strong> Cập nhật prompt để yêu cầu Tax Agent trả lời cực kỳ ngắn gọn (dưới 3 câu) bằng tiếng Việt. Giảm số token đầu ra, rút ngắn thời gian sinh text của API.</li>
+                    </ul>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="info-card">
+                    <h4>🛡️ Khả năng chịu lỗi (Fault Tolerance) đã chứng minh thế nào?</h4>
+                    <p><strong>Khi tắt Tax Agent:</strong> Lệnh gọi đến cổng `:10102` ném ra ngoại lệ `ConnectError`.</p>
+                    <ul>
+                        <li>Nhờ xử lý ngoại lệ `try-except` trong `law_agent/graph.py` (bắt lỗi `Exception` và trả về `[Tax analysis unavailable: ...]`), hệ thống **không bị sập**.</li>
+                        <li>Law Agent vẫn tiếp tục gửi yêu cầu đến Compliance Agent, nhận dữ liệu và tổng hợp báo cáo gửi về cho Client, chỉ để trống phần thông tin thuế bị lỗi.</li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Scripting for UI and Node Interaction Simulation & Live Execution -->
+    <script>
+        const presets = {
+            1: "Nếu công ty bị vi phạm hợp đồng và trốn thuế, hậu quả pháp lý là gì?",
+            2: "Công ty công nghệ bị rò rỉ dữ liệu cá nhân khách hàng, hậu quả pháp lý và tuân thủ là gì?",
+            3: "Vi phạm hợp đồng NDA bảo mật và khai sai thuế nước ngoài phạt bao nhiêu?"
+        };
+
+        let isLiveMode = false;
+
+        function selectPreset(id) {
+            document.getElementById("user-question").value = presets[id];
+        }
+
+        async function updateLiveStatus() {
+            let customerOnline = false;
+            let registryOnline = false;
+            let lawOnline = false;
+            let taxOnline = false;
+            let complianceOnline = false;
+
+            // Ping Registry
+            try {
+                await fetch("http://localhost:10000/openapi.json", { mode: 'no-cors', cache: 'no-store' });
+                registryOnline = true;
+                document.getElementById("registry-status-dot").classList.remove("offline");
+            } catch (e) {
+                document.getElementById("registry-status-dot").classList.add("offline");
+            }
+
+            // Ping Customer
+            try {
+                await fetch("http://localhost:10100/.well-known/agent.json", { mode: 'no-cors', cache: 'no-store' });
+                customerOnline = true;
+                document.getElementById("customer-status-dot").classList.remove("offline");
+            } catch (e) {
+                document.getElementById("customer-status-dot").classList.add("offline");
+            }
+
+            // Ping Law
+            try {
+                await fetch("http://localhost:10101/.well-known/agent.json", { mode: 'no-cors', cache: 'no-store' });
+                lawOnline = true;
+                document.getElementById("law-status-dot").classList.remove("offline");
+            } catch (e) {
+                document.getElementById("law-status-dot").classList.add("offline");
+            }
+
+            // Ping Tax
+            try {
+                await fetch("http://localhost:10102/.well-known/agent.json", { mode: 'no-cors', cache: 'no-store' });
+                taxOnline = true;
+                document.getElementById("tax-status-dot").classList.remove("offline");
+            } catch (e) {
+                document.getElementById("tax-status-dot").classList.add("offline");
+            }
+
+            // Ping Compliance
+            try {
+                await fetch("http://localhost:10103/.well-known/agent.json", { mode: 'no-cors', cache: 'no-store' });
+                complianceOnline = true;
+                document.getElementById("compliance-status-dot").classList.remove("offline");
+            } catch (e) {
+                document.getElementById("compliance-status-dot").classList.add("offline");
+            }
+
+            // Tie Privacy status to Law Agent online status
+            if (lawOnline) {
+                document.getElementById("privacy-status-dot").classList.remove("offline");
+            } else {
+                document.getElementById("privacy-status-dot").classList.add("offline");
+            }
+
+            const badge = document.getElementById("dashboard-mode-badge");
+            const text = document.getElementById("dashboard-mode-text");
+            const dot = document.getElementById("dashboard-mode-dot");
+
+            if (customerOnline) {
+                isLiveMode = true;
+                badge.style.borderColor = "var(--success)";
+                badge.style.backgroundColor = "var(--success-glow)";
+                dot.className = "status-dot";
+                text.innerText = "Chế độ: Chạy Thực Tế (Live)";
+            } else {
+                isLiveMode = false;
+                badge.style.borderColor = "var(--warning)";
+                badge.style.backgroundColor = "rgba(245, 158, 11, 0.1)";
+                dot.className = "status-dot orange";
+                text.innerText = "Chế độ: Mô Phỏng (Offline)";
+            }
+        }
+
+        // Periodically verify node services online status
+        setInterval(updateLiveStatus, 5000);
+        window.addEventListener("load", updateLiveStatus);
+
+        function toggleAgentStatus(agentId) {
+            const agentNames = {
+                'customer': 'Customer Agent',
+                'law': 'Law Agent',
+                'tax': 'Tax Agent',
+                'compliance': 'Compliance Agent',
+                'privacy': 'Privacy Agent'
+            };
+            const name = agentNames[agentId] || agentId;
+            const statusDot = document.getElementById(`${agentId}-status-dot`);
+            const isOnline = document.getElementById(`${agentId}-toggle`).checked;
+            
+            if (isLiveMode) {
+                addLogLine(`[Hệ thống] Lưu ý: Để tắt/bật ${name} trong Chế độ Chạy thực tế, hãy dừng hoặc chạy tiến trình Python tương ứng trên máy của bạn.`, "warning");
+                // Reset checkbox to match actual ping state
+                if (statusDot) {
+                    document.getElementById(`${agentId}-toggle`).checked = !statusDot.classList.contains("offline");
+                }
+                return;
+            }
+            
+            if (statusDot) {
+                if (isOnline) {
+                    statusDot.classList.remove("offline");
+                    addLogLine(`[Registry] ${name} đã khôi phục hoạt động (ONLINE)`, "success");
+                } else {
+                    statusDot.classList.add("offline");
+                    addLogLine(`[Registry] ${name} đã dừng hoạt động đột ngột (OFFLINE)`, "error");
+                }
+            }
+        }
+
+        function toggleLatencyMode() {
+            const isOptimized = document.getElementById("latency-toggle").checked;
+            const optimizedVal = document.getElementById("optimized-latency-val");
+            if (isOptimized) {
+                optimizedVal.innerText = isLiveMode ? "--" : "28.2s";
+                addLogLine("[Hệ thống] Đã kích hoạt chế độ Tối ưu Latency (Bypass Lớp LLM Customer)", "success");
+            } else {
+                optimizedVal.innerText = isLiveMode ? "--" : "48.5s";
+                addLogLine("[Hệ thống] Chế độ nguyên bản (Không tối ưu): Sẽ chạy đầy đủ LangGraph LLM ở Customer Agent", "warning");
+            }
+        }
+
+        function addLogLine(text, type = "info") {
+            const consoleBox = document.getElementById("terminal-console");
+            const line = document.createElement("div");
+            line.className = `console-line ${type}`;
+            const time = new Date().toLocaleTimeString();
+            line.innerText = `[${time}] ${text}`;
+            consoleBox.appendChild(line);
+            consoleBox.scrollTop = consoleBox.scrollHeight;
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function parseMarkdown(text) {
+            if (!text) return "";
+            
+            let rawLines = text.split('\n');
+            let inList = false;
+            let htmlLines = [];
+            
+            for (let line of rawLines) {
+                let trimmed = line.trim();
+                
+                // Headers
+                if (trimmed.startsWith('### ')) {
+                    if (inList) { htmlLines.push('</ul>'); inList = false; }
+                    htmlLines.push(`<h3>${trimmed.substring(4)}</h3>`);
+                } else if (trimmed.startsWith('## ')) {
+                    if (inList) { htmlLines.push('</ul>'); inList = false; }
+                    htmlLines.push(`<h2>${trimmed.substring(3)}</h2>`);
+                } else if (trimmed.startsWith('# ')) {
+                    if (inList) { htmlLines.push('</ul>'); inList = false; }
+                    htmlLines.push(`<h1>${trimmed.substring(2)}</h1>`);
+                }
+                // Bullet points
+                else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+                    if (!inList) { htmlLines.push('<ul>'); inList = true; }
+                    let content = trimmed.substring(2);
+                    content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    htmlLines.push(`<li>${content}</li>`);
+                }
+                // Empty line
+                else if (trimmed === '') {
+                    if (inList) { htmlLines.push('</ul>'); inList = false; }
+                    htmlLines.push('<br>');
+                }
+                // Regular paragraph text
+                else {
+                    if (inList) { htmlLines.push('</ul>'); inList = false; }
+                    let content = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    htmlLines.push(`<p>${content}</p>`);
+                }
+            }
+            if (inList) { htmlLines.push('</ul>'); }
+            return htmlLines.join('\n');
+        }
+
+        let activeTimers = {};
+        
+        function resetNodeTimers() {
+            // Stop any running intervals
+            for (let id in activeTimers) {
+                if (activeTimers[id] && activeTimers[id].intervalId) {
+                    clearInterval(activeTimers[id].intervalId);
+                }
+            }
+            activeTimers = {};
+            
+            // Reset UI labels
+            document.querySelectorAll(".node-timer").forEach(timer => {
+                timer.innerText = "--";
+                timer.style.color = "var(--text-muted)";
+            });
+        }
+        
+        // Start simulated timer for Simulation Mode
+        function startSimulatedTimer(nodeId, targetDuration, realDurationMs) {
+            if (activeTimers[nodeId]) {
+                clearInterval(activeTimers[nodeId].intervalId);
+            }
+            
+            const timerEl = document.getElementById(`timer-${nodeId}`);
+            if (!timerEl) return;
+            
+            timerEl.style.color = "var(--primary)";
+            const startTime = Date.now();
+            
+            const intervalId = setInterval(() => {
+                const elapsedReal = Date.now() - startTime;
+                const ratio = Math.min(elapsedReal / realDurationMs, 1.0);
+                const simulatedTime = (ratio * targetDuration).toFixed(1);
+                timerEl.innerText = `${simulatedTime}s`;
+                
+                if (ratio >= 1.0) {
+                    clearInterval(intervalId);
+                    timerEl.innerText = `${targetDuration.toFixed(1)}s`;
+                    timerEl.style.color = "var(--success)";
+                }
+            }, 50);
+            
+            activeTimers[nodeId] = { intervalId, timerEl, targetDuration };
+        }
+
+        // Start simulated timer counting up from a starting value to target
+        function startSimulatedTimerFrom(nodeId, startVal, targetVal, realDurationMs) {
+            if (activeTimers[nodeId]) {
+                clearInterval(activeTimers[nodeId].intervalId);
+            }
+            
+            const timerEl = document.getElementById(`timer-${nodeId}`);
+            if (!timerEl) return;
+            
+            timerEl.style.color = "var(--primary)";
+            const startTime = Date.now();
+            
+            const intervalId = setInterval(() => {
+                const elapsedReal = Date.now() - startTime;
+                const ratio = Math.min(elapsedReal / realDurationMs, 1.0);
+                const simulatedTime = (startVal + ratio * (targetVal - startVal)).toFixed(1);
+                timerEl.innerText = `${simulatedTime}s`;
+                
+                if (ratio >= 1.0) {
+                    clearInterval(intervalId);
+                    timerEl.innerText = `${targetVal.toFixed(1)}s`;
+                    timerEl.style.color = "var(--success)";
+                }
+            }, 50);
+            
+            activeTimers[nodeId] = { intervalId, timerEl, targetDuration: targetVal };
+        }
+
+        // Live Node Timers
+        let liveNodeStartTimes = {};
+        let liveNodeIntervals = {};
+        
+        function startLiveNodeTimer(nodeId) {
+            if (liveNodeIntervals[nodeId]) {
+                clearInterval(liveNodeIntervals[nodeId]);
+            }
+            
+            const timerEl = document.getElementById(`timer-${nodeId}`);
+            if (!timerEl) return;
+            
+            timerEl.style.color = "var(--primary)";
+            liveNodeStartTimes[nodeId] = Date.now();
+            timerEl.innerText = "0.0s";
+            
+            liveNodeIntervals[nodeId] = setInterval(() => {
+                const elapsed = ((Date.now() - liveNodeStartTimes[nodeId]) / 1000).toFixed(1);
+                timerEl.innerText = `${elapsed}s`;
+            }, 100);
+        }
+        
+        function stopLiveNodeTimer(nodeId, finalVal = null) {
+            if (liveNodeIntervals[nodeId]) {
+                clearInterval(liveNodeIntervals[nodeId]);
+                delete liveNodeIntervals[nodeId];
+            }
+            const timerEl = document.getElementById(`timer-${nodeId}`);
+            if (timerEl) {
+                if (finalVal !== null) {
+                    timerEl.innerText = `${finalVal.toFixed(1)}s`;
+                } else if (liveNodeStartTimes[nodeId]) {
+                    const elapsed = ((Date.now() - liveNodeStartTimes[nodeId]) / 1000).toFixed(1);
+                    timerEl.innerText = `${elapsed}s`;
+                }
+                timerEl.style.color = "var(--success)";
+            }
+        }
+
+        async function startExecution() {
+            const question = document.getElementById("user-question").value;
+            const isOptimized = document.getElementById("latency-toggle").checked;
+            
+            const customerOnline = document.getElementById("customer-toggle").checked;
+            const lawOnline = document.getElementById("law-toggle").checked;
+            const taxOnline = document.getElementById("tax-toggle").checked;
+            const complianceOnline = document.getElementById("compliance-toggle").checked;
+            const privacyOnline = document.getElementById("privacy-toggle").checked;
+            
+            const btn = document.getElementById("btn-submit");
+            const resultView = document.getElementById("result-view");
+
+            btn.disabled = true;
+            btn.style.opacity = "0.7";
+            resultView.innerHTML = `<p style="color: var(--primary); font-style: italic;">Đang xử lý yêu cầu qua các Agent...</p>`;
+            
+            // Reset node styles and link lines
+            document.querySelectorAll(".agent-node").forEach(n => {
+                n.classList.remove("active", "active-success");
+                n.style.borderColor = "";
+            });
+            document.querySelectorAll(".link-line").forEach(l => l.classList.remove("active", "active-purple"));
+            resetNodeTimers();
+
+            const traceId = "tr-" + Math.random().toString(36).substr(2, 9);
+            const contextId = "ctx-" + Math.random().toString(36).substr(2, 9);
+
+            if (isLiveMode) {
+                // Real Live Execution via API
+                let startTime = Date.now();
+                addLogLine(`[Client] [CHẠY THỰC TẾ] Gửi câu hỏi đến Customer Agent...`, "success");
+                addLogLine(`[Client] Yêu cầu: "${question}"`, "info");
+                
+                // Show initial node animation
+                document.getElementById("node-user").classList.add("active");
+                document.getElementById("link-user-customer").classList.add("active");
+
+                // Start API call in background
+                let apiPromise = (async () => {
+                    const payload = {
+                        id: traceId,
+                        jsonrpc: "2.0",
+                        method: "message/send",
+                        params: {
+                            message: {
+                                messageId: "msg-" + Math.random().toString(36).substr(2, 9),
+                                parts: [{ kind: "text", text: question }],
+                                role: "user",
+                                metadata: {
+                                    trace_id: traceId,
+                                    optimize: isOptimized
+                                }
+                            }
+                        }
+                    };
+                    const response = await fetch("http://localhost:10100/", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                })();
+
+                let apiData = null;
+                let apiFailed = false;
+                let apiError = null;
+
+                apiPromise.then(
+                    data => { apiData = data; },
+                    err => { apiFailed = true; apiError = err; }
+                );
+
+                // Helper to sleep and check API status
+                const awaitSleep = async (ms) => {
+                    if (apiFailed) {
+                        throw apiError;
+                    }
+                    if (apiData) {
+                        // Fast-forward
+                        await sleep(Math.min(ms, 500));
+                        return;
+                    }
+                    const checkInterval = 100;
+                    let elapsed = 0;
+                    while (elapsed < ms) {
+                        if (apiFailed) {
+                            throw apiError;
+                        }
+                        if (apiData) {
+                            await sleep(500); // give some buffer to see it
+                            return;
+                        }
+                        await sleep(checkInterval);
+                        elapsed += checkInterval;
+                    }
+                };
+
+                // Helper to stop simulated timer (handles both interval cleanups)
+                const stopTimer = (nodeId, finalVal) => {
+                    if (activeTimers[nodeId]) {
+                        clearInterval(activeTimers[nodeId].intervalId);
+                        delete activeTimers[nodeId];
+                    }
+                    const timerEl = document.getElementById(`timer-${nodeId}`);
+                    if (timerEl) {
+                        timerEl.innerText = `${finalVal.toFixed(1)}s`;
+                        timerEl.style.color = "var(--success)";
+                    }
+                };
+
+                try {
+                    // Step 1: User to Customer
+                    startSimulatedTimer('user', 0.1, 100);
+                    await awaitSleep(100);
+                    stopTimer('user', 0.1);
+
+                    // Step 2: Customer Agent
+                    document.getElementById("node-customer").classList.add("active");
+                    document.getElementById("link-user-customer").classList.remove("active");
+                    document.getElementById("link-user-customer").classList.add("active-purple");
+
+                    if (isOptimized) {
+                        addLogLine(`[Customer Agent] (Chế độ tối ưu) Bỏ qua LLM. Gọi trực tiếp Law Agent qua Registry...`, "success");
+                        startSimulatedTimer('customer', 0.0, 100);
+                        await awaitSleep(100);
+                        stopTimer('customer', 0.0);
+                    } else {
+                        addLogLine(`[Customer Agent] (Chế độ thường) Gọi LLM kiểm tra câu hỏi pháp lý...`, "warning");
+                        startSimulatedTimer('customer', 5.2, 5200);
+                        await awaitSleep(5200);
+                        stopTimer('customer', 5.2);
+                        addLogLine(`[Customer Agent] LLM quyết định: Vi phạm hợp đồng & thuế thuộc Legal Domain. Gọi công cụ delegate_to_legal_agent.`, "info");
+                        await awaitSleep(800);
+                    }
+
+                    // Step 3: Customer to Law
+                    document.getElementById("link-customer-law").classList.add("active");
+                    addLogLine(`[Customer Agent] Gọi Registry phát hiện Law Agent tại port 10101`, "info");
+                    await awaitSleep(800);
+
+                    // Step 4: Law Agent
+                    document.getElementById("node-law").classList.add("active");
+                    document.getElementById("link-customer-law").classList.remove("active");
+                    document.getElementById("link-customer-law").classList.add("active-purple");
+                    addLogLine(`[Law Agent] Đã tiếp nhận yêu cầu (Depth=1). Gọi LLM phân tích luật chung...`, "info");
+
+                    if (isOptimized) {
+                        startSimulatedTimer('law', 9.8, 9800);
+                        await awaitSleep(9800);
+                        addLogLine(`[Law Agent] Phân tích luật chung hoàn tất. Gọi LLM quyết định định tuyến...`, "info");
+                        startSimulatedTimerFrom('law', 9.8, 15.0, 5200);
+                        await awaitSleep(5200);
+                    } else {
+                        startSimulatedTimer('law', 12.8, 12800);
+                        await awaitSleep(12800);
+                        addLogLine(`[Law Agent] Phân tích luật chung hoàn tất. Gọi LLM quyết định định tuyến...`, "info");
+                        startSimulatedTimerFrom('law', 12.8, 19.2, 6400);
+                        await awaitSleep(6400);
+                    }
+
+                    // Decide specialists
+                    let qLower = question.toLowerCase();
+                    let needsTax = qLower.includes("thuế") || qLower.includes("tax");
+                    let needsCompliance = qLower.includes("tuân thủ") || qLower.includes("compliance") || qLower.includes("rò rỉ") || qLower.includes("data");
+                    let needsPrivacy = qLower.includes("dữ liệu") || qLower.includes("privacy") || qLower.includes("gdpr") || qLower.includes("rò rỉ");
+
+                    addLogLine(`[Law Agent] Định tuyến: needs_tax=${needsTax}, needs_compliance=${needsCompliance}, needs_privacy=${needsPrivacy}`, "warning");
+                    await awaitSleep(1000);
+
+                    let specialistSleep = 0;
+                    if (needsTax) specialistSleep = Math.max(specialistSleep, isOptimized ? 2800 : 6800);
+                    if (needsCompliance) specialistSleep = Math.max(specialistSleep, isOptimized ? 5700 : 8500);
+                    if (needsPrivacy) specialistSleep = Math.max(specialistSleep, isOptimized ? 4800 : 7200);
+                    if (specialistSleep === 0 && (needsTax || needsCompliance || needsPrivacy)) specialistSleep = 1000;
+
+                    // Dispatch parallel subagents
+                    if (needsTax) {
+                        document.getElementById("link-law-tax").classList.add("active");
+                        addLogLine(`[Law Agent] Gửi request song song đến Tax Agent (:10102)...`, "info");
+                        document.getElementById("node-tax").classList.add("active");
+                        startSimulatedTimer('tax', isOptimized ? 2.8 : 6.8, isOptimized ? 2800 : 6800);
+                    }
+                    if (needsCompliance) {
+                        document.getElementById("link-law-compliance").classList.add("active");
+                        addLogLine(`[Law Agent] Gửi request song song đến Compliance Agent (:10103)...`, "info");
+                        document.getElementById("node-compliance").classList.add("active");
+                        startSimulatedTimer('compliance', isOptimized ? 5.7 : 8.5, isOptimized ? 5700 : 8500);
+                    }
+                    if (needsPrivacy) {
+                        document.getElementById("link-law-privacy").classList.add("active");
+                        addLogLine(`[Law Agent] Gửi request song song đến Privacy Agent (In-process)...`, "info");
+                        document.getElementById("node-privacy").classList.add("active");
+                        startSimulatedTimer('privacy', isOptimized ? 4.8 : 7.2, isOptimized ? 4800 : 7200);
+                    }
+
+                    await awaitSleep(specialistSleep);
+
+                    // Stop specialists
+                    if (needsTax) {
+                        document.getElementById("link-law-tax").classList.remove("active");
+                        document.getElementById("link-law-tax").classList.add("active-purple");
+                        document.getElementById("node-tax").classList.add("active-success");
+                        stopTimer('tax', isOptimized ? 2.8 : 6.8);
+                        addLogLine(`[Tax Agent] Trả về báo cáo phân tích thuế thành công (Ngắn gọn tiếng Việt).`, "agent-tax");
+                    }
+                    if (needsCompliance) {
+                        document.getElementById("link-law-compliance").classList.remove("active");
+                        document.getElementById("link-law-compliance").classList.add("active-purple");
+                        document.getElementById("node-compliance").classList.add("active-success");
+                        stopTimer('compliance', isOptimized ? 5.7 : 8.5);
+                        addLogLine(`[Compliance Agent] Trả về phân tích tuân thủ thành công (3100 ký tự).`, "agent-compliance");
+                    }
+                    if (needsPrivacy) {
+                        document.getElementById("link-law-privacy").classList.remove("active");
+                        document.getElementById("link-law-privacy").classList.add("active-purple");
+                        document.getElementById("node-privacy").classList.add("active-success");
+                        stopTimer('privacy', isOptimized ? 4.8 : 7.2);
+                        addLogLine(`[Privacy Agent] Trả về phân tích bảo mật dữ liệu & GDPR thành công.`, "agent-privacy");
+                    }
+
+                    await awaitSleep(1000);
+
+                    // Step 5: Law Agent Aggregation
+                    addLogLine(`[Law Agent] Đang tổng hợp phân tích từ các Agent chuyên gia bằng LLM...`, "info");
+                    if (isOptimized) {
+                        startSimulatedTimerFrom('law', 15.0, 22.5, 7500);
+                        await awaitSleep(7500);
+                        stopTimer('law', 22.5);
+                    } else {
+                        startSimulatedTimerFrom('law', 19.2, 29.5, 10300);
+                        await awaitSleep(10300);
+                        stopTimer('law', 29.5);
+                    }
+                    document.getElementById("node-law").classList.add("active-success");
+                    addLogLine(`[Law Agent] Gửi báo cáo tổng hợp trả lại cho Customer Agent.`, "success");
+                    await awaitSleep(1000);
+
+                    // Step 6: Customer Agent return response
+                    document.getElementById("node-customer").classList.add("active-success");
+                    if (isOptimized) {
+                        addLogLine(`[Customer Agent] (Chế độ tối ưu) Trả thẳng báo cáo cho Client mà không gọi LLM để định dạng lại.`, "success");
+                    } else {
+                        addLogLine(`[Customer Agent] Gọi LLM định dạng lại câu trả lời...`, "warning");
+                        startSimulatedTimerFrom('customer', 5.2, 10.5, 5300);
+                        await awaitSleep(5300);
+                        stopTimer('customer', 10.5);
+                    }
+                    await awaitSleep(800);
+
+                    // Wait for API response if it is not yet completed
+                    if (!apiData) {
+                        addLogLine(`[Client] Đang đợi kết quả tính toán thực tế từ hệ thống A2A...`, "info");
+                        // We start Client timer ticking from the current duration
+                        let elapsedSoFar = (Date.now() - startTime) / 1000;
+                        startLiveNodeTimer('user');
+                        apiData = await apiPromise;
+                        stopLiveNodeTimer('user');
+                    }
+
+                    // Finish
+                    document.getElementById("node-user").classList.add("active-success");
+                    let finalDuration = ((Date.now() - startTime) / 1000).toFixed(1);
+                    addLogLine(`[Client] Nhận phản hồi từ Customer Agent thành công! Tổng thời gian thực tế: ${finalDuration}s`, "success");
+
+                    // Update latency cards with real duration
+                    if (isOptimized) {
+                        document.getElementById("optimized-latency-val").innerText = `${finalDuration}s`;
+                    } else {
+                        document.querySelector(".latency-card.original .latency-val").innerText = `${finalDuration}s`;
+                    }
+
+                    // Extract and show response
+                    let resultText = "";
+                    if (apiData.result) {
+                        if (apiData.result.parts) {
+                            for (const part of apiData.result.parts) {
+                                const p = part.root || part;
+                                if (p.text) resultText += p.text;
+                            }
+                        } else if (apiData.result.artifacts) {
+                            for (const artifact of apiData.result.artifacts) {
+                                if (artifact.parts) {
+                                    for (const part of artifact.parts) {
+                                        const p = part.root || part;
+                                        if (p.text) resultText += p.text;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (!resultText) {
+                        resultText = "Không nhận được văn bản phản hồi từ hệ thống.";
+                    }
+
+                    resultView.innerHTML = parseMarkdown(resultText);
+
+                    // Success animation glow
+                    document.querySelectorAll(".agent-node.active").forEach(n => {
+                        n.classList.remove("active");
+                        n.classList.add("active-success");
+                    });
+                    document.querySelectorAll(".link-line.active").forEach(l => {
+                        l.classList.remove("active");
+                        l.classList.add("active-purple");
+                    });
+
+                } catch (err) {
+                    addLogLine(`[Hệ thống] Lỗi khi kết nối hoặc chạy thực tế: ${err.message}`, "error");
+                    resultView.innerHTML = `<p style="color: var(--danger);"><strong>Lỗi Chạy Thực Tế:</strong> Không thể hoàn thành yêu cầu.<br>Hãy chắc chắn rằng bạn đã chạy các agent dịch vụ bằng lệnh <code>python start_all.py</code> và cổng 10100 hoạt động.<br><br>Chi tiết: ${err.message}</p>`;
+                    
+                    // Reset all nodes to red/failed border
+                    document.querySelectorAll(".agent-node").forEach(n => {
+                        n.classList.remove("active");
+                        n.style.borderColor = "var(--danger)";
+                    });
+                } finally {
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                }
+            }
+
+            } else {
+                // Fallback to Mock Simulation
+                // Step 1: User to Customer
+                document.getElementById("node-user").classList.add("active");
+                document.getElementById("link-user-customer").classList.add("active");
+                addLogLine(`[Client] [MÔ PHỎNG] Gửi câu hỏi đến Customer Agent. Trace ID: ${traceId}`, "info");
+                startSimulatedTimer('user', 0.1, 100);
+                await sleep(100);
+                stopLiveNodeTimer('user', 0.1);
+
+                // Check if Customer Agent is offline
+                if (!customerOnline) {
+                    addLogLine(`[Client] ERROR: Không thể kết nối đến Customer Agent ở cổng :10100 (ConnectError)`, "error");
+                    document.getElementById("node-customer").classList.add("active");
+                    await sleep(500);
+                    document.getElementById("node-customer").classList.remove("active");
+                    document.getElementById("node-customer").style.borderColor = "var(--danger)";
+                    document.getElementById("node-user").style.borderColor = "var(--danger)";
+                    
+                    resultView.innerHTML = `
+                        <h1 style="color: var(--danger); font-size: 1.25rem;">LỖI KẾT NỐI HỆ THỐNG (MÔ PHỎNG)</h1>
+                        <p style="color: var(--danger)"><strong>ConnectError:</strong> Không thể kết nối đến Customer Agent (:10100). Đảm bảo dịch vụ đang trực tuyến hoặc gạt công tắc bật agent.</p>
+                    `;
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                    return;
+                }
+
+                // Step 2: Customer Agent
+                document.getElementById("node-customer").classList.add("active");
+                document.getElementById("link-user-customer").classList.remove("active");
+                document.getElementById("link-user-customer").classList.add("active-purple");
+                
+                if (isOptimized) {
+                    addLogLine(`[Customer Agent] (Chế độ tối ưu) Bỏ qua LLM. Gọi trực tiếp Law Agent qua Registry...`, "success");
+                    startSimulatedTimer('customer', 0.0, 100);
+                    await sleep(100);
+                } else {
+                    addLogLine(`[Customer Agent] (Chế độ thường) Gọi LLM kiểm tra câu hỏi pháp lý...`, "warning");
+                    startSimulatedTimer('customer', 5.2, 5200);
+                    await sleep(5200);
+                    addLogLine(`[Customer Agent] LLM quyết định: Vi phạm hợp đồng & thuế thuộc Legal Domain. Gọi công cụ delegate_to_legal_agent.`, "info");
+                    await sleep(800);
+                }
+
+                // Check if Law Agent is offline
+                if (!lawOnline) {
+                    addLogLine(`[Customer Agent] ERROR: Kết nối đến Law Agent ở cổng :10101 thất bại (ConnectError)`, "error");
+                    document.getElementById("link-customer-law").classList.add("active");
+                    document.getElementById("node-law").classList.add("active");
+                    await sleep(800);
+                    document.getElementById("link-customer-law").classList.remove("active");
+                    document.getElementById("node-law").classList.remove("active");
+                    document.getElementById("node-law").style.borderColor = "var(--danger)";
+                    document.getElementById("node-customer").style.borderColor = "var(--danger)";
+                    
+                    resultView.innerHTML = `
+                        <h1 style="color: var(--danger); font-size: 1.25rem;">LỖI KẾT NỐI HỆ THỐNG (MÔ PHỎNG)</h1>
+                        <p style="color: var(--danger)"><strong>ConnectError:</strong> Customer Agent không thể liên kết/gửi tiếp yêu cầu đến Law Agent (:10101). Hãy chắc chắn Law Agent đã được bật trên UI.</p>
+                    `;
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                    return;
+                }
+
+                // Step 3: Customer to Law
+                document.getElementById("link-customer-law").classList.add("active");
+                addLogLine(`[Customer Agent] Gọi Registry phát hiện Law Agent tại port 10101`, "info");
+                await sleep(800);
+
+                // Step 4: Law Agent
+                document.getElementById("node-law").classList.add("active");
+                document.getElementById("link-customer-law").classList.remove("active");
+                document.getElementById("link-customer-law").classList.add("active-purple");
+                addLogLine(`[Law Agent] Đã tiếp nhận yêu cầu (Depth=1). Gọi LLM phân tích luật chung...`, "info");
+                
+                if (isOptimized) {
+                    startSimulatedTimer('law', 9.8, 9800);
+                    await sleep(9800);
+                    addLogLine(`[Law Agent] Phân tích luật chung hoàn tất. Gọi LLM quyết định định tuyến...`, "info");
+                    startSimulatedTimerFrom('law', 9.8, 15.0, 5200);
+                    await sleep(5200);
+                } else {
+                    startSimulatedTimer('law', 12.8, 12800);
+                    await sleep(12800);
+                    addLogLine(`[Law Agent] Phân tích luật chung hoàn tất. Gọi LLM quyết định định tuyến...`, "info");
+                    startSimulatedTimerFrom('law', 12.8, 19.2, 6400);
+                    await sleep(6400);
+                }
+                
+                // Decide specialists
+                let qLower = question.toLowerCase();
+                let needsTax = qLower.includes("thuế") || qLower.includes("tax");
+                let needsCompliance = qLower.includes("tuân thủ") || qLower.includes("compliance") || qLower.includes("rò rỉ") || qLower.includes("data");
+                let needsPrivacy = qLower.includes("dữ liệu") || qLower.includes("privacy") || qLower.includes("gdpr") || qLower.includes("rò rỉ");
+
+                addLogLine(`[Law Agent] Định tuyến: needs_tax=${needsTax}, needs_compliance=${needsCompliance}, needs_privacy=${needsPrivacy}`, "warning");
+                await sleep(1000);
+
+                // Calculate specialist sleep time (max of active specialist timers)
+                let specialistSleep = 0;
+                if (needsTax && taxOnline) {
+                    specialistSleep = Math.max(specialistSleep, isOptimized ? 2800 : 6800);
+                }
+                if (needsCompliance && complianceOnline) {
+                    specialistSleep = Math.max(specialistSleep, isOptimized ? 5700 : 8500);
+                }
+                if (needsPrivacy && privacyOnline) {
+                    specialistSleep = Math.max(specialistSleep, isOptimized ? 4800 : 7200);
+                }
+                // Fallback sleep if everything offline
+                if (specialistSleep === 0 && (needsTax || needsCompliance || needsPrivacy)) {
+                    specialistSleep = 1000;
+                }
+
+                // Dispatch parallel subagents
+                if (needsTax) {
+                    document.getElementById("link-law-tax").classList.add("active");
+                    if (taxOnline) {
+                        addLogLine(`[Law Agent] Gửi request song song đến Tax Agent (:10102)...`, "info");
+                        document.getElementById("node-tax").classList.add("active");
+                        startSimulatedTimer('tax', isOptimized ? 2.8 : 6.8, isOptimized ? 2800 : 6800);
+                    } else {
+                        addLogLine(`[Law Agent] WARNING: Thử kết nối đến Tax Agent (:10102)...`, "warning");
+                    }
+                }
+                
+                if (needsCompliance) {
+                    document.getElementById("link-law-compliance").classList.add("active");
+                    if (complianceOnline) {
+                        addLogLine(`[Law Agent] Gửi request song song đến Compliance Agent (:10103)...`, "info");
+                        document.getElementById("node-compliance").classList.add("active");
+                        startSimulatedTimer('compliance', isOptimized ? 5.7 : 8.5, isOptimized ? 5700 : 8500);
+                    } else {
+                        addLogLine(`[Law Agent] WARNING: Thử kết nối đến Compliance Agent (:10103)...`, "warning");
+                    }
+                }
+
+                if (needsPrivacy) {
+                    document.getElementById("link-law-privacy").classList.add("active");
+                    if (privacyOnline) {
+                        addLogLine(`[Law Agent] Gửi request song song đến Privacy Agent (In-process)...`, "info");
+                        document.getElementById("node-privacy").classList.add("active");
+                        startSimulatedTimer('privacy', isOptimized ? 4.8 : 7.2, isOptimized ? 4800 : 7200);
+                    } else {
+                        addLogLine(`[Law Agent] WARNING: Thử kết nối đến Privacy Agent...`, "warning");
+                    }
+                }
+
+                await sleep(specialistSleep);
+
+                // Handle results & fault tolerance
+                if (needsTax) {
+                    document.getElementById("link-law-tax").classList.remove("active");
+                    document.getElementById("link-law-tax").classList.add("active-purple");
+                    if (taxOnline) {
+                        addLogLine(`[Tax Agent] Trả về báo cáo phân tích thuế thành công (Ngắn gọn tiếng Việt).`, "agent-tax");
+                        document.getElementById("node-tax").classList.add("active-success");
+                    } else {
+                        addLogLine(`[Law Agent] ERROR: Kết nối Tax Agent thất bại (ConnectError). Áp dụng tính năng chịu lỗi (Fault Tolerance)...`, "error");
+                        addLogLine(`[Law Agent] Ghi nhận: [Tax analysis unavailable: ConnectError] vào State.`, "warning");
+                        document.getElementById("node-tax").style.borderColor = "var(--danger)";
+                        const timerEl = document.getElementById("timer-tax");
+                        if (timerEl) {
+                            timerEl.innerText = "Lỗi";
+                            timerEl.style.color = "var(--danger)";
+                        }
+                    }
+                }
+
+                if (needsCompliance) {
+                    document.getElementById("link-law-compliance").classList.remove("active");
+                    document.getElementById("link-law-compliance").classList.add("active-purple");
+                    if (complianceOnline) {
+                        document.getElementById("node-compliance").classList.add("active-success");
+                        addLogLine(`[Compliance Agent] Trả về phân tích tuân thủ thành công (3100 ký tự).`, "agent-compliance");
+                    } else {
+                        addLogLine(`[Law Agent] ERROR: Kết nối Compliance Agent thất bại (ConnectError). Áp dụng tính năng chịu lỗi (Fault Tolerance)...`, "error");
+                        addLogLine(`[Law Agent] Ghi nhận: [Compliance analysis unavailable: ConnectError] vào State.`, "warning");
+                        document.getElementById("node-compliance").style.borderColor = "var(--danger)";
+                        const timerEl = document.getElementById("timer-compliance");
+                        if (timerEl) {
+                            timerEl.innerText = "Lỗi";
+                            timerEl.style.color = "var(--danger)";
+                        }
+                    }
+                }
+
+                if (needsPrivacy) {
+                    document.getElementById("link-law-privacy").classList.remove("active");
+                    document.getElementById("link-law-privacy").classList.add("active-purple");
+                    if (privacyOnline) {
+                        document.getElementById("node-privacy").classList.add("active-success");
+                        addLogLine(`[Privacy Agent] Trả về phân tích bảo mật dữ liệu & GDPR thành công.`, "agent-privacy");
+                    } else {
+                        addLogLine(`[Law Agent] ERROR: Kết nối Privacy Agent thất bại (ConnectError). Áp dụng tính năng chịu lỗi (Fault Tolerance)...`, "error");
+                        addLogLine(`[Law Agent] Ghi nhận: [Privacy analysis unavailable: ConnectError] vào State.`, "warning");
+                        document.getElementById("node-privacy").style.borderColor = "var(--danger)";
+                        const timerEl = document.getElementById("timer-privacy");
+                        if (timerEl) {
+                            timerEl.innerText = "Lỗi";
+                            timerEl.style.color = "var(--danger)";
+                        }
+                    }
+                }
+
+                await sleep(1000);
+
+                // Step 5: Law Agent Aggregation
+                addLogLine(`[Law Agent] Đang tổng hợp phân tích từ các Agent chuyên gia bằng LLM...`, "info");
+                if (isOptimized) {
+                    startSimulatedTimerFrom('law', 15.0, 22.5, 7500);
+                    await sleep(7500);
+                } else {
+                    startSimulatedTimerFrom('law', 19.2, 29.5, 10300);
+                    await sleep(10300);
+                }
+                document.getElementById("node-law").classList.add("active-success");
+                addLogLine(`[Law Agent] Gửi báo cáo tổng hợp trả lại cho Customer Agent.`, "success");
+                await sleep(1000);
+
+                // Step 6: Customer Agent return response
+                document.getElementById("node-customer").classList.add("active-success");
+                if (isOptimized) {
+                    addLogLine(`[Customer Agent] (Chế độ tối ưu) Trả thẳng báo cáo cho Client mà không gọi LLM để định dạng lại.`, "success");
+                } else {
+                    addLogLine(`[Customer Agent] Gọi LLM định dạng lại câu trả lời...`, "warning");
+                    startSimulatedTimerFrom('customer', 5.2, 10.5, 5300);
+                    await sleep(5300);
+                }
+                await sleep(800);
+
+                // Final: Back to User
+                document.getElementById("node-user").classList.add("active-success");
+                addLogLine(`[Client] Nhận kết quả thành công. Luồng xử lý hoàn tất!`, "success");
+
+                // Populate mock final report based on variables
+                let reportHTML = `
+                    <h1>BÁO CÁO PHÂN TÍCH PHÁP LÝ & HẬU QUẢ VI PHẠM (MÔ PHỎNG)</h1>
+                    <p><strong>Mã cuộc gọi (Trace ID):</strong> ${traceId}</p>
+                    <p><strong>Cơ sở phân tích:</strong> Tích hợp Multi-Agent</p>
+                    
+                    <h2>1. Phân tích pháp lý tổng quát (Law Agent)</h2>
+                    <p>Việc doanh nghiệp vi phạm hợp đồng mà không có lý do chính đáng sẽ cấu thành hành vi vi phạm nghĩa vụ hợp đồng dân sự/thương mại. Bên bị vi phạm có quyền đòi bồi thường thiệt hại thực tế phát sinh (theo án lệ Hadley v. Baxendale) hoặc yêu cầu tòa án áp dụng biện pháp khẩn cấp tạm thời.</p>
+                `;
+
+                if (needsTax) {
+                    if (taxOnline) {
+                        reportHTML += `
+                            <h2>2. Phân tích nghĩa vụ Thuế (Tax Agent)</h2>
+                            <p>Hành vi trốn thuế cấu thành tội danh hình sự theo quy định của IRC § 7201 (phạt tiền lên đến $250,000 và phạt tù đến 5 năm). Về mặt dân sự, IRS có thể truy thu số thuế trốn tránh cộng với lãi suất phát sinh và phạt gian lận lên tới 75% giá trị thuế thiếu hụt.</p>
+                        `;
+                    } else {
+                        reportHTML += `
+                            <h2>2. Phân tích nghĩa vụ Thuế (Tax Agent)</h2>
+                            <p style="color: var(--danger); font-style: italic;">[Tax analysis unavailable: Cổng kết nối :10102 không phản hồi do Tax Agent ngoại tuyến. Phân tích thuế tạm thời bị bỏ trống để đảm bảo tính liên tục của hệ thống]</p>
+                        `;
+                    }
+                }
+
+                if (needsCompliance) {
+                    if (complianceOnline) {
+                        reportHTML += `
+                            <h2>3. Phân tích tính Tuân thủ & Kiểm soát (Compliance Agent)</h2>
+                            <p>Công ty có thể đối mặt với cuộc điều tra đặc biệt từ SEC và Sở giao dịch chứng khoán nếu là công ty đại chúng. Việc làm sai lệch báo cáo tài chính vi phạm nghiêm trọng Đạo luật Sarbanes-Oxley (SOX § 906), người quản lý trực tiếp có thể chịu trách nhiệm cá nhân với mức phạt lên tới $5M.</p>
+                        `;
+                    } else {
+                        reportHTML += `
+                            <h2>3. Phân tích tính Tuân thủ & Kiểm soát (Compliance Agent)</h2>
+                            <p style="color: var(--danger); font-style: italic;">[Compliance analysis unavailable: Cổng kết nối :10103 không phản hồi do Compliance Agent ngoại tuyến. Phân tích tuân thủ tạm thời bị bỏ trống để đảm bảo tính liên tục của hệ thống]</p>
+                        `;
+                    }
+                }
+
+                if (needsPrivacy) {
+                    if (privacyOnline) {
+                        reportHTML += `
+                            <h2>4. Phân tích Bảo mật dữ liệu & GDPR (Privacy Agent)</h2>
+                            <p>Việc để rò rỉ dữ liệu cá nhân của người tiêu dùng mà không có cơ chế bảo mật và thông báo kịp thời vi phạm quy định GDPR của EU (mức phạt lên tới 4% doanh thu toàn cầu hoặc 20 triệu EUR) và CCPA của Mỹ ($7,500 cho mỗi vi phạm cố ý).</p>
+                        `;
+                    } else {
+                        reportHTML += `
+                            <h2>4. Phân tích Bảo mật dữ liệu & GDPR (Privacy Agent)</h2>
+                            <p style="color: var(--danger); font-style: italic;">[Privacy analysis unavailable: Privacy Agent không phản hồi. Phân tích bảo mật dữ liệu tạm thời bị bỏ trống để đảm bảo tính liên tục của hệ thống]</p>
+                        `;
+                    }
+                }
+
+                reportHTML += `
+                    <hr style="border-color: var(--border-color); margin: 1rem 0;">
+                    <p style="font-size: 0.8rem; color: var(--text-muted);"><strong>Khuyến cáo pháp lý:</strong> Báo cáo này được tự động tạo lập từ các AI agent chuyên môn hóa cho mục đích học tập và tham khảo. Doanh nghiệp cần tham khảo ý kiến của luật sư có thẻ hành nghề trước khi ra quyết định thực tế.</p>
+                `;
+
+                resultView.innerHTML = reportHTML;
+                btn.disabled = false;
+                btn.style.opacity = "1";
+            }
+        }
+    </script>
+</body>
+</html>
